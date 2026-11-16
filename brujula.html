@@ -113,8 +113,8 @@ footer{margin-top:36px;padding-top:10px;border-top:1.5px dashed var(--line);font
   };
   // estado: on = en vivo · nx = siguiente · q = en fila (cambiar aquí a medida que avanzamos)
   const L = [
-    [['Producción', 'Produção', 'Production'], [['Realizado', 'Realizado', 'Actual'], ['Falta realizar', 'Falta realizar', 'Remaining']], 'on', 'index.html'],
-    [['Plan de entrega', 'Plano de entrega', 'Delivery plan'], [['Fecha de entrega vs. producción', 'Data de entrega vs. produção', 'Delivery date vs. production']], 'on', 'index.html'],
+    [['Producción', 'Produção', 'Production'], [['Realizado', 'Realizado', 'Actual'], ['Falta realizar', 'Falta realizar', 'Remaining']], 'on'],
+    [['Plan de entrega', 'Plano de entrega', 'Delivery plan'], [['Fecha de entrega vs. producción', 'Data de entrega vs. produção', 'Delivery date vs. production']], 'on'],
     [['Inventario', 'Estoque', 'Inventory'], [['Materia prima (MP)', 'Matéria-prima (MP)', 'Raw material (RM)'], ['Producto terminado', 'Produto acabado', 'Finished goods']], 'nx'],
     [['Costo de material', 'Custo de material', 'Material cost'], [['BOM (estructura)', 'BOM (estrutura)', 'BOM (structure)'], ['Alambre', 'Arame', 'Wire'], ['Pintura', 'Pintura', 'Paint'], ['Gas', 'Gás', 'Gas']], 'q'],
     [['Planeación', 'Planejamento', 'Planning'], [['Desvío de inventario', 'Desvio de estoque', 'Inventory variance']], 'q'],
@@ -160,7 +160,7 @@ footer{margin-top:36px;padding-top:10px;border-top:1.5px dashed var(--line);font
     $('#ata').alt = tr(T.alt);
     document.querySelectorAll('.lang button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.l === l));
     const ST = { on: tr(T.stOn), nx: tr(T.stNx), q: tr(T.stQ) };
-    $('#board').innerHTML = L.map(([t, s, e, href], i) => `<div class="it ${e}"><span class="n">${i + 1}</span><h3>${tr(t)}</h3><ul>${s.map((x) => `<li>${tr(x)}</li>`).join('')}</ul><span class="st ${e}">${ST[e]}</span>${href ? ` <a class="st q" href="${href}">${tr(T.open)}</a>` : ''}</div>`).join('');
+    $('#board').innerHTML = L.map(([t, s, e], i) => `<div class="it ${e}"><span class="n">${i + 1}</span><h3>${tr(t)}</h3><ul>${s.map((x) => `<li>${tr(x)}</li>`).join('')}</ul><span class="st ${e}">${ST[e]}</span></div>`).join('');
     $('#dashL').innerHTML = DASH.map(([x, on]) => `<li>${tr(x)}${on ? ` <span class="ok">${tr(T.live)}</span>` : ''}</li>`).join('');
     $('#comL').innerHTML = COM.map((x) => `<li>${tr(x)}</li>`).join('');
     $('#f2L').innerHTML = F2.map((x) => `<li>${tr(x)}</li>`).join('');
