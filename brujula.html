@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Brújula Alambrarte</title>
+<style>
+:root{--bg:#f4f3ef;--panel:#fff;--fg:#1f1e1b;--muted:#5f5c56;--line:#e3e0d8;--grid:#ebe8e1;--brand:#0F5C8C;--brand2:#9cc3dd;--ok:#0a7d0a;--okbg:#e6f4e6;--bad:#c62f2f;--badbg:#fbeaea;--warn:#8a5a00;--warnbg:#fff4d6;--sal:#b5651d;--mute:#c9c5bc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--panel:#1d1d1b;--fg:#f0efec;--muted:#b4b2aa;--line:#33322f;--grid:#2a2927;--brand:#5aa6d6;--brand2:#2c5a78;--ok:#5cc25c;--okbg:#18301a;--bad:#ef6b6b;--badbg:#3a1c1c;--warn:#e0b04a;--warnbg:#3a2f12;--sal:#e09a5a;--mute:#4a4843}}
+:root[data-theme="dark"]{--bg:#141413;--panel:#1d1d1b;--fg:#f0efec;--muted:#b4b2aa;--line:#33322f;--grid:#2a2927;--brand:#5aa6d6;--brand2:#2c5a78;--ok:#5cc25c;--okbg:#18301a;--bad:#ef6b6b;--badbg:#3a1c1c;--warn:#e0b04a;--warnbg:#3a2f12;--sal:#e09a5a;--mute:#4a4843}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:8px}
+.brand{font-size:28px;font-weight:700;letter-spacing:-.02em;margin:0}
+.brand small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:14px}
+nav.tabs a:hover{background:var(--panel);color:var(--fg)}
+section{margin-top:32px}
+h2{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
+.lead{color:var(--muted);margin:0 0 16px;max-width:760px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.2;margin-top:2px}
+.kpi .s{font-size:12px;color:var(--muted)}
+.kpi.ok .v{color:var(--ok)} .kpi.bad .v{color:var(--bad)} .kpi.warn .v{color:var(--warn)}
+.how{font-size:12px;color:var(--muted);margin:8px 0 0}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:8px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+input[type=password]{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);width:150px;text-transform:uppercase}
+.state{font-size:13px;color:var(--muted)}
+.state.err{color:var(--bad)}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tag.on{background:var(--okbg);color:var(--ok)} .tag.nx{background:var(--warnbg);color:var(--warn)} .tag.map{background:var(--grid);color:var(--muted)} .tag.ej{background:var(--warnbg);color:var(--warn)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+svg text{font-family:inherit}
+table.t{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.t th{color:var(--muted);font-weight:600;font-size:12px}
+table.t .l{text-align:left}
+table.ft{border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+table.ft td,table.ft th{padding:2px 0;text-align:center;border-top:1px solid var(--grid)}
+table.ft th{text-align:left;color:var(--muted);font-weight:600;padding-right:6px;white-space:nowrap}
+.pos{color:var(--ok)} .neg{color:var(--bad)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:4px 0 6px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.grid>*{min-width:0}
+.two{grid-template-columns:1fr 1fr} @media (max-width:760px){.two{grid-template-columns:1fr}}
+.areas{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.area h3{margin:0;font-size:16px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.area ul{margin:10px 0 0;padding:0;list-style:none;font-size:13.5px}
+.area li{padding:4px 0;border-top:1px solid var(--grid);display:flex;justify-content:space-between;gap:8px}
+.area li span:last-child{color:var(--muted);font-size:12px;white-space:nowrap}
+.area .who{font-size:12.5px;color:var(--muted);margin-top:6px}
+.prog{height:10px;background:var(--grid);border-radius:99px;overflow:hidden;margin:6px 0}
+.prog b{display:block;height:100%;background:var(--ok);border-radius:99px}
+ol.road{list-style:none;margin:0;padding:0;counter-reset:f}
+ol.road>li{position:relative;padding:0 0 18px 44px;counter-increment:f}
+ol.road>li::before{content:counter(f);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--panel);border:2px solid var(--line);color:var(--muted)}
+ol.road>li.on::before{background:var(--ok);border-color:var(--ok);color:#fff}
+ol.road>li.nx::before{border-color:var(--warn);color:var(--warn)}
+ol.road>li::after{content:"";position:absolute;left:15px;top:32px;bottom:2px;width:2px;background:var(--line)}
+ol.road>li:last-child::after{display:none}
+ol.road h4{margin:3px 0 2px;font-size:15px}
+ol.road p{margin:0;font-size:13.5px;color:var(--muted)}
+.steps{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.steps .card b{display:block;font-size:13px;color:var(--brand)}
+.steps .card p{margin:4px 0 0;font-size:13.5px}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:13.5px;margin:0}
+dl.gl dt{font-weight:600} dl.gl dd{margin:0;color:var(--muted)}
+footer{margin-top:40px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.alerts li{font-size:13.5px;padding:4px 0;border-top:1px solid var(--grid);list-style:none}
+.alerts{margin:0;padding:0}
+.mk{font-weight:700} .mk.stk{color:var(--brand)} .mk.over{color:var(--warn)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1 class="brand">Brújula Alambrarte<small>Ecosistema de control por áreas · <span id="fecha"></span></small></h1>
+  <nav class="tabs"><a href="#prod">Producción y Embarque</a><a href="#areas">Áreas</a><a href="#plan">Plan de acción</a><a href="#fin">Finanzas</a><a href="#glos">Glosario</a></nav>
+</header>
+
+<section id="prod">
+  <h2>Producción y Embarque · en vivo</h2>
+  <p class="lead">Datos del link de apuntes (servidor Google). Se actualiza al entrar y cada 5 minutos con la página abierta.</p>
+  <div class="bar" id="loginBar">
+    <label for="pw" class="state">Contraseña ADMIN</label>
+    <input id="pw" type="password" maxlength="12" autocomplete="off">
+    <button class="btn pri" id="go">Ver datos en vivo</button>
+    <button class="btn" id="demo">Ver ejemplo</button>
+    <span class="state" id="st"></span>
+  </div>
+  <div class="bar hide" id="liveBar">
+    <span class="tag on" id="srcTag">En vivo</span>
+    <span class="state" id="upd"></span>
+    <a class="btn" href="index.html">Abrir la app</a>
+    <a class="btn" href="reporte.html">Reporte</a>
+    <button class="btn" id="refresh">Actualizar</button>
+    <button class="btn" id="salir">Salir</button>
+  </div>
+  <div id="prodBody"></div>
+</section>
+
+<section id="areas">
+  <h2>Áreas del ecosistema</h2>
+  <p class="lead">Cada área entra a la Brújula cuando sus controles tienen captura diaria y un responsable. Hoy está en vivo Producción y Embarque; las demás ya están mapeadas con Junior.</p>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><b>Controles en vivo</b><span id="cntTxt" class="state"></span></div>
+    <div class="prog"><b id="cntBar"></b></div>
+    <p class="how">Controles en vivo ÷ controles mapeados con Junior (todas las áreas).</p>
+  </div>
+  <div class="grid areas" id="areaGrid"></div>
+</section>
+
+<section id="plan">
+  <h2>Plan de acción</h2>
+  <p class="lead">Poblamos la Brújula un área a la vez, siempre con el mismo método. Un área nueva entra solo cuando la anterior se apunta todos los días sin ayuda.</p>
+  <div class="grid steps" style="margin-bottom:20px">
+    <div class="card"><b>1 · Mapear</b><p>Con Junior: qué se controla, quién apunta, cada cuánto y qué decisión toma con el dato.</p></div>
+    <div class="card"><b>2 · Capturar</b><p>Un link de apuntes como el de Producción: perfiles ADMIN y del área, contraseña fija, funciona en el celular.</p></div>
+    <div class="card"><b>3 · Probar 2 semanas</b><p>El área apunta en paralelo a lo que usa hoy; corregimos campos y avisos.</p></div>
+    <div class="card"><b>4 · Conectar</b><p>Los indicadores entran a esta Brújula con su línea de “cómo se calcula” y su manual.</p></div>
+  </div>
+  <div class="card"><ol class="road" id="road"></ol></div>
+</section>
+
+<section id="fin">
+  <h2>Finanzas · Flujo de caja diario (formato estándar)</h2>
+  <p class="lead">Así se verá el flujo de caja cuando Finanzas entre en vivo: saldos de los bancos, cobros (CxC) y pagos (CxP) del día. <span class="tag ej">Datos de ejemplo</span></p>
+  <div id="finBody"></div>
+</section>
+
+<section id="glos">
+  <h2>Glosario y fórmulas</h2>
+  <div class="card"><dl class="gl">
+    <dt>Programa</dt><dd>Cantidad que el cliente pidió para el mes.</dd>
+    <dt>Retraso</dt><dd>Pendiente del mes anterior que se suma al mes.</dd>
+    <dt>Planeado / Emb. planeado</dt><dd>Producción y embarque planeados por día (plan aprobado por ADMIN).</dd>
+    <dt>Realizado / Embarque</dt><dd>Lo que Producción apuntó en el link, por día.</dd>
+    <dt>Avance</dt><dd>Realizado ÷ (Programa + Retraso).</dd>
+    <dt>Cumplimiento</dt><dd>Realizado ÷ Planeado a la fecha (embarque: Embarque ÷ Emb. planeado a la fecha). Verde ≥ 100%, amarillo 90–99%, rojo &lt; 90%.</dd>
+    <dt>Var. / Disp. %</dt><dd>Var. = Realizado − Planeado; Disp. % = Var. ÷ Planeado.</dd>
+    <dt>Stock disp.</dt><dd>Inv. inicial + Realizado − Embarque.</dd>
+    <dt><span class="mk stk">◆</span> Stock para embarcar</dt><dd>Hay stock, falta embarcar y la producción del modelo está atrasada.</dd>
+    <dt><span class="mk over">▲</span> Sobre programa</dt><dd>Realizado mayor que Programa + Retraso.</dd>
+    <dt>Generación de caja</dt><dd>Entradas − Salidas del día. Saldo final = Saldo inicial + Generación.</dd>
+    <dt>% cobrado / % pagado</dt><dd>Cobrado ÷ CxC del periodo; Pagado ÷ CxP del periodo. En abierto = lo que falta.</dd>
+  </dl></div>
+</section>
+
+<footer>Brújula Alambrarte · Alpha Solutions · Números en formato 1,234 · Porcentajes sin decimales salvo Disp. % · Nómina se mostrará solo en totales por grupo, sin nombres ni salarios individuales.</footer>
+</div>
+
+<script>
+(() => {
+  const URL_SRV = 'https://script.google.com/macros/s/AKfycbzpkWxjyJ_r1M_7-sCe6XG_R8ZUNEWkSEUhOfLa3Ct2aFyxTaWcRm9SJQDe3NSrh-aRhw/exec';
+  const EJEMPLO = {"titulo":"Plan de Produccion - NOVIEMBRE 2026","pid":"pNOVIEMBRE2026","dias":["2026-11-02","2026-11-03","2026-11-04","2026-11-05","2026-11-06","2026-11-07","2026-11-09","2026-11-10","2026-11-11","2026-11-12","2026-11-13","2026-11-14","2026-11-16","2026-11-17","2026-11-18","2026-11-19","2026-11-20","2026-11-21","2026-11-23","2026-11-24","2026-11-25","2026-11-26","2026-11-27","2026-11-28"],"items":[{"id":"r6","cli":"B&J","mod":"VENTILA","cod":"CP3602M","stu":null,"ret":0,"prog":860,"ini":900,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,250,250,250,110,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,250,null,500,null,110,null,null,null]},{"id":"r10","cli":"B&J","mod":"VENTILA","cod":"CP3602X","stu":null,"ret":0,"prog":810,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,300,300,210,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,300,null,null,510,null,null,null,null,null]},{"id":"r14","cli":"B&J","mod":"VENTILA","cod":"CP3601G","stu":null,"ret":0,"prog":1320,"ini":55,"plan":[null,null,null,null,null,150,150,150,150,150,150,150,150,120,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,160,155,155,150,155,150,145,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,150,null,300,null,300,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,150,null,300,null,300,null,300,null,null,270,null,null,null,null,null,null,null]},{"id":"r18","cli":"B&J","mod":"VENTILA","cod":"CP3601M","stu":null,"ret":200,"prog":425,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,250,250,125,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,250,null,null,375,null,null,null,null,null]},{"id":"r22","cli":"B&J","mod":"VENTILA","cod":"CP 4022V","stu":null,"ret":0,"prog":1635,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,300,300,300,300,300,135,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,300,null,null,900,null,435,null,null,null,null]},{"id":"r26","cli":"B&J","mod":"VENTILA","cod":"CP4028Z","stu":null,"ret":0,"prog":1980,"ini":155,"plan":[null,null,null,null,null,250,250,250,250,250,250,250,230,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,260,250,255,245,260,245,260,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,215,null,500,null,500,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,250,null,500,null,500,null,500,null,230,null,null,null,null,null,null,null,null]},{"id":"r30","cli":"B&J","mod":"VENTILA","cod":"CP3606W","stu":null,"ret":0,"prog":2210,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,100,100,100,100,100,100,100,100,100,100,100,100,1010],"real":[null,null,null,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,100,null,null,300,null,200,null,null,300,null,1310]},{"id":"r34","cli":"B&J","mod":"VENTILA","cod":"CP4606S","stu":null,"ret":0,"prog":1970,"ini":0,"plan":[null,null,null,250,250,250,250,250,250,250,220,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,0,255,250,255,250,260,245,215,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,250,null,null,750,null,null,635,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,250,null,null,750,null,null,750,null,null,220,null,null,null,null,null,null,null,null,null]},{"id":"r37","cli":"B&J","mod":"VENTILA","cod":"CP4032","stu":1.9,"ret":0,"prog":655,"ini":0,"plan":[null,null,null,null,null,null,null,250,250,155,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,215,220,145,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,250,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,250,null,null,405,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r41","cli":"B&J","mod":"VENTILA","cod":"CP4032A","stu":null,"ret":0,"prog":1565,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,150,150,150,150,150,150,150,150,150,150,65],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,150,null,null,450,null,300,null,null,665]},{"id":"r45","cli":"B&J","mod":"VENTILA","cod":"CP4032H","stu":null,"ret":0,"prog":1270,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,200,200,200,200,200,200,70,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,205,210,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,200,null,400,null,400,null,null,270,null,null,null,null]},{"id":"r49","cli":"B&J","mod":"CANASTILLA","cod":"CP9033K","stu":null,"ret":0,"prog":1395,"ini":205,"plan":[null,null,null,null,null,300,300,300,300,195,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,310,300,295,310,200,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,300,null,0,null,495,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,300,null,600,null,495,null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r53","cli":"B&J","mod":"VENTILA","cod":"CP3602Y","stu":null,"ret":0,"prog":360,"ini":0,"plan":[null,null,null,null,null,null,250,110,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,220,85,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,250,null,null,55,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,250,null,null,110,null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r60","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4019X","stu":1.1,"ret":0,"prog":1225,"ini":0,"plan":[null,null,null,null,null,null,null,null,100,100,100,100,100,100,100,100,100,100,100,100,25,null,null,null],"real":[null,null,null,null,null,null,null,null,125,125,125,125,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,100,null,null,300,null,200,null,200,null,200,null,200,null,25]},{"id":"r64","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4000O","stu":1.4,"ret":0,"prog":2385,"ini":0,"plan":[null,null,null,null,null,null,null,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,785],"real":[null,null,null,null,null,null,null,100,100,105,100,95,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,100,null,200,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,100,null,200,null,null,300,null,null,300,null,null,300,null,200,985]},{"id":"r68","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4009I","stu":1.0,"ret":0,"prog":720,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,250,250,220,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,250,null,470,null,null,null,null,null]},{"id":"r73","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4019B","stu":0.9,"ret":215,"prog":585,"ini":0,"plan":[null,null,null,null,null,null,250,250,250,50,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,255,255,260,50,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,250,null,500,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,250,null,500,null,null,50,null,null,null,null,null,null,null,null,null,null]},{"id":"r78","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4019O","stu":1.0,"ret":140,"prog":810,"ini":0,"plan":[null,null,100,100,100,100,100,100,100,100,100,50,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,85,85,80,90,75,85,75,75,75,45,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,100,null,null,260,null,175,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,100,null,null,300,null,200,null,null,300,null,null,50,null,null,null,null,null,null,null,null]},{"id":"r86","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4020F","stu":1.0,"ret":0,"prog":895,"ini":0,"plan":[null,null,150,150,150,150,150,145,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,150,145,155,155,155,150,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,0,null,null,450,null,295,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,150,null,null,450,null,295,null,null,null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r90","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4031V","stu":2.2,"ret":0,"prog":1020,"ini":240,"plan":[null,null,null,null,null,null,null,200,200,200,200,200,20,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,165,170,155,165,175,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,200,null,400,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,200,null,400,null,400,null,null,20,null,null,null,null,null,null,null]},{"id":"r94","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4025T","stu":1.9,"ret":0,"prog":2310,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,100,100,100,100,100,100,100,100,100,100,1310],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,100,null,200,null,null,300,null,null,1710]},{"id":"r98","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4031L","stu":1.0,"ret":0,"prog":1480,"ini":190,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,100,100,100,100,100,100,100,100,100,100,480],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,100,null,200,null,200,null,null,300,680]},{"id":"r102","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4031W","stu":2.5,"ret":0,"prog":2120,"ini":500,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,null,2120,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,300,null,null,null,null,null,null,null,null,null,1820,null]},{"id":"r106","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4032B","stu":1.9,"ret":0,"prog":1300,"ini":0,"plan":[null,null,null,null,100,100,100,100,100,100,100,100,100,100,100,100,100,null,null,null,null,null,null,null],"real":[null,null,null,null,100,100,100,105,100,100,105,100,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,100,null,0,null,200,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,100,null,200,null,200,null,null,300,null,null,300,null,null,200,null,null,null,null]},{"id":"r110","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4019T","stu":1.0,"ret":0,"prog":2200,"ini":0,"plan":[null,null,null,150,150,150,150,150,150,150,150,150,150,150,150,150,150,100,null,null,null,null,null,null],"real":[null,null,null,155,160,150,150,150,145,155,145,160,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,150,null,null,450,null,300,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,150,null,null,450,null,300,null,null,450,null,null,450,null,300,null,100,null,null,null]},{"id":"r114","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4032E","stu":1.0,"ret":0,"prog":1435,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,300,300,300,300,235,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,300,null,600,null,535,null,null,null,null,null]},{"id":"r118","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4024H","stu":1.4,"ret":0,"prog":1725,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,250,250,250,250,250,250,225,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,255,255,260,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,250,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,250,null,500,null,null,750,null,null,225,null,null,null,null]},{"id":"r122","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4014W","stu":1.4,"ret":0,"prog":475,"ini":0,"plan":[null,null,null,null,null,null,200,200,75,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,205,210,80,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,200,null,275,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,200,null,275,null,null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r126","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4019P","stu":1.0,"ret":0,"prog":1385,"ini":150,"plan":[null,null,null,null,100,100,100,100,100,100,100,100,100,100,100,100,100,85,null,null,null,null,null,null],"real":[null,null,null,null,90,90,0,90,80,0,80,80,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,100,null,200,null,200,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,100,null,200,null,200,null,200,null,null,300,null,200,null,null,185,null,null,null]},{"id":"r130","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4020U","stu":1.0,"ret":0,"prog":920,"ini":0,"plan":[null,null,null,null,null,null,null,null,null,150,150,150,150,150,150,20,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,140,140,140,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,150,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,150,null,null,450,null,null,320,null,null,null,null,null,null]},{"id":"r134","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4021W","stu":1.4,"ret":0,"prog":1835,"ini":0,"plan":[null,null,250,250,250,250,250,250,250,85,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,200,225,190,225,190,220,220,0,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,250,null,null,0,null,500,null,335,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,250,null,null,750,null,500,null,335,null,null,null,null,null,null,null,null,null,null,null,null]},{"id":"r138","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4022U","stu":1.0,"ret":0,"prog":2265,"ini":75,"plan":[null,null,null,null,null,null,null,null,null,null,null,null,300,300,300,300,300,300,300,165,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,300,null,null,900,null,600,null,465,null,null]},{"id":"r142","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"CP4031R","stu":null,"ret":0,"prog":800,"ini":105,"plan":[null,null,null,null,null,null,null,null,null,null,150,150,150,150,150,50,null,null,null,null,null,null,null,null],"real":[null,null,null,null,null,null,null,null,null,null,150,160,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,null,null,null,null,null,null,150,null,300,null,300,null,null,50,null,null,null,null]},{"id":"r146","cli":"ALAMBRARTE","mod":"PARRILLA","cod":"4032Z","stu":2.2,"ret":0,"prog":845,"ini":0,"plan":[null,null,null,null,250,250,250,95,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"real":[null,null,null,null,260,250,250,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"emb":[null,null,null,null,null,null,250,null,null,595,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"pemb":[null,null,null,null,null,null,250,null,null,595,null,null,null,null,null,null,null,null,null,null,null,null,null,null]}],"hist":[],"lock":{"plan":true,"pemb":true}};
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const nf = new Intl.NumberFormat('en-US');
+  const fN = (x) => (x == null || isNaN(x) ? '—' : nf.format(Math.round(x)));
+  const fPc = (x) => (x == null || !isFinite(x) ? '—' : Math.round(x * 100) + '%');
+  const fK = (x) => { const a = Math.abs(x); return (x < 0 ? '−' : '') + (a >= 1e6 ? (a / 1e6).toFixed(1) + 'M' : a >= 1e4 ? Math.round(a / 1e3) + 'k' : a >= 1e3 ? (a / 1e3).toFixed(1).replace('.0', '') + 'k' : Math.round(a)); };
+  const MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const p2 = (x) => String(x).padStart(2, '0');
+  const iso = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+  const HOY = iso(new Date());
+  const ss = { get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} } };
+  { const d = new Date(); $('#fecha').textContent = `${d.getDate()} de ${MES[d.getMonth()]} de ${d.getFullYear()}`; }
+
+  // ---------------------------------------------------------------- datos
+  function armar(plan, regs) {
+    const dias = plan.dias || [];
+    const R = {};
+    (regs || []).forEach((r) => { if (r.pid && plan.pid && r.pid !== plan.pid) return; const k = r.id + '~' + r.tipo + '~' + r.dia, c = R[k]; if (!c || String(c.ts || '') <= String(r.ts || '')) R[k] = r; });
+    const extraDias = new Set();
+    Object.values(R).forEach((r) => { if (!dias.includes(r.dia)) extraDias.add(r.dia); });
+    const todos = [...dias, ...extraDias].sort();
+    const items = (plan.items || []).map((it) => {
+      const g = (tipo) => todos.map((d) => {
+        const r = R[it.id + '~' + tipo + '~' + d];
+        if (r) return r.v == null ? null : +r.v;
+        const i = dias.indexOf(d);
+        return i < 0 ? null : (it[tipo] && it[tipo][i] != null ? +it[tipo][i] : null);
+      });
+      return { ...it, plan: g('plan'), pemb: g('pemb'), real: g('real'), emb: g('emb') };
+    });
+    return { titulo: plan.titulo || '', dias: todos, enPlan: new Set(dias), items, est: plan.est || {} };
+  }
+  const suma = (a) => a.reduce((s, v) => s + (+v || 0), 0);
+  const aF = (D, arr) => suma(arr.filter((_, i) => D.dias[i] <= HOY));
+
+  function calcular(D) {
+    let PR = 0, RE = 0, EM = 0, pF = 0, rF = 0, eF = 0, ebF = 0, ST = 0, nS = 0, nO = 0;
+    const filas = [];
+    D.items.forEach((it) => {
+      const pr = (+it.prog || 0) + (+it.ret || 0), re = suma(it.real), em = suma(it.emb);
+      const pf = aF(D, it.plan), rf = aF(D, it.real), ef = aF(D, it.pemb), ebf = aF(D, it.emb);
+      const st = (+it.ini || 0) + re - em;
+      const atrP = pf - rf, pendE = Math.max(0, ef - ebf);
+      const stk = st > 0 && pendE > 0 && ((atrP > 0 && atrP >= 0.05 * pf) || re === 0);
+      const over = re > pr && pr > 0;
+      PR += pr; RE += re; EM += em; pF += pf; rF += rf; eF += ef; ebF += ebf; ST += Math.max(0, st);
+      if (stk) nS++; if (over) nO++;
+      filas.push({ it, pr, re, pf, rf, ef, ebf, st, atr: Math.max(0, atrP) + pendE, atrP, pendE, stk, over });
+    });
+    const porDia = D.dias.map((d, i) => ({ d, plan: suma(D.items.map((x) => x.plan[i])), real: suma(D.items.map((x) => x.real[i])), pemb: suma(D.items.map((x) => x.pemb[i])), emb: suma(D.items.map((x) => x.emb[i])), enPlan: D.enPlan.has(d) }));
+    return { PR, RE, EM, pF, rF, eF, ebF, ST, nS, nO, filas, porDia };
+  }
+
+  // ---------------------------------------------------------------- vista producción
+  const clsC = (x) => (x == null || !isFinite(x) ? '' : x >= 1 ? 'ok' : x >= 0.9 ? 'warn' : 'bad');
+  function kpi(l, v, s, c) { return `<div class="card kpi ${c || ''}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`; }
+
+  function grafDia(rows, kP, kR, nomP, nomR) {
+    const W = Math.max(860, rows.length * 38 + 90), H = 230, L = 70, T = 24, B = 30, cw = (W - L - 10) / rows.length;
+    const mx = Math.max(1, ...rows.map((r) => Math.max(r[kP], r[kR]))) * 1.15, y = (v) => T + (H - T - B) * (1 - v / mx);
+    const tick = (() => { const s = mx / 4, m = Math.pow(10, Math.floor(Math.log10(s))); const n = s / m; return (n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10) * m; })();
+    let g = '';
+    for (let v = 0; v <= mx; v += tick) g += `<line x1="${L}" x2="${W - 10}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${fN(v)}</text>`;
+    rows.forEach((r, i) => {
+      const cx = L + cw * i + cw / 2, dd = new Date(r.d + 'T12:00:00'), we = dd.getDay() === 0 || dd.getDay() === 6, hoy = r.d === HOY;
+      if (hoy) g += `<rect x="${cx - cw / 2}" y="${T - 14}" width="${cw}" height="${H - T - B + 14}" fill="var(--brand)" opacity=".07"/>`;
+      const wP = Math.min(24, cw * 0.7), wR = Math.max(5, wP * 0.38);
+      if (r[kP]) g += `<rect x="${cx - wP / 2}" y="${y(r[kP])}" width="${wP}" height="${y(0) - y(r[kP])}" rx="3" fill="var(--brand2)"><title>${r.d} · ${nomP}: ${fN(r[kP])}</title></rect>`;
+      if (r[kR]) {
+        const c = r[kP] && r[kR] < r[kP] * 0.9 ? 'var(--bad)' : 'var(--brand)';
+        g += `<rect x="${cx - wR / 2}" y="${y(r[kR])}" width="${wR}" height="${y(0) - y(r[kR])}" rx="2" fill="${c}"><title>${r.d} · ${nomR}: ${fN(r[kR])}</title></rect>`;
+        g += `<text x="${cx}" y="${y(Math.max(r[kR], r[kP])) - 5}" text-anchor="middle" font-size="10" font-weight="600" fill="var(--fg)">${fK(r[kR])}</text>`;
+      } else if (r[kP]) g += `<text x="${cx}" y="${y(r[kP]) - 5}" text-anchor="middle" font-size="10" fill="var(--muted)">${fK(r[kP])}</text>`;
+      g += `<text x="${cx}" y="${H - B + 14}" text-anchor="middle" font-size="11" fill="${hoy ? 'var(--brand)' : we ? 'var(--warn)' : 'var(--muted)'}" font-weight="${hoy ? 700 : 400}">${+r.d.slice(8)}</text>`;
+      if (hoy) g += `<text x="${cx}" y="${H - B + 27}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--brand)">HOY</text>`;
+    });
+    g += `<line x1="${L}" x2="${W - 10}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)"/>`;
+    const svg = `<svg width="${W}" height="${H + 6}" viewBox="0 0 ${W} ${H + 6}" role="img" aria-label="${nomP} contra ${nomR} por día">${g}</svg>`;
+    const td = (v, c) => `<td style="width:${cw}px" class="${c || ''}">${v}</td>`;
+    const ft = `<table class="ft" style="width:${W - 10}px"><tr><th style="width:${L}px">${nomP}</th>${rows.map((r) => td(r[kP] ? fK(r[kP]) : '')).join('')}</tr><tr><th>${nomR}</th>${rows.map((r) => td(r[kR] ? fK(r[kR]) : '')).join('')}</tr><tr><th>Var.</th>${rows.map((r) => { const v = (r[kR] || 0) - (r[kP] || 0); return r.d > HOY || (!r[kP] && !r[kR]) ? td('') : td((v > 0 ? '+' : '') + fK(v), v < 0 ? 'neg' : v > 0 ? 'pos' : ''); }).join('')}</tr></table>`;
+    return `<div class="scroll">${svg}${ft}</div>`;
+  }
+
+  function vistaProd(D, ts, ejemplo) {
+    const C = calcular(D);
+    const cP = C.pF ? C.rF / C.pF : null, cE = C.eF ? C.ebF / C.eF : null;
+    const est = (k) => ({ aprobado: 'aprobado', abierto: 'habilitado para Producción', enviado: 'enviado, espera ADMIN' }[D.est[k]] || '—');
+    const top = C.filas.filter((f) => f.atr > 0).sort((a, b) => b.atr - a.atr).slice(0, 8);
+    const alertas = C.filas.filter((f) => f.stk || f.over);
+    $('#upd').textContent = (ejemplo ? 'Ejemplo: noviembre ficticio' : 'Actualizado') + ' · ' + new Date(ts).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' }) + ' · ' + D.titulo;
+    $('#srcTag').textContent = ejemplo ? 'Ejemplo' : 'En vivo'; $('#srcTag').className = 'tag ' + (ejemplo ? 'ej' : 'on');
+    $('#prodBody').innerHTML = `
+      <div class="grid kpis">
+        ${kpi('Programa + Retraso', fN(C.PR), 'piezas del mes')}
+        ${kpi('Realizado', fN(C.RE), 'Avance ' + fPc(C.PR ? C.RE / C.PR : null) + ' del mes')}
+        ${kpi('Cumplimiento producción', fPc(cP), fN(C.rF) + ' de ' + fN(C.pF) + ' planeado a la fecha', clsC(cP))}
+        ${kpi('Cumplimiento embarque', fPc(cE), fN(C.ebF) + ' de ' + fN(C.eF) + ' planeado a la fecha', clsC(cE))}
+        ${kpi('Stock disponible', fN(C.ST), 'piezas terminadas en planta')}
+        ${kpi('Avisos', `<span class="mk stk">◆</span> ${C.nS} · <span class="mk over">▲</span> ${C.nO}`, 'stock para embarcar · sobre programa', C.nS || C.nO ? 'warn' : '')}
+      </div>
+      <p class="how">Avance = Realizado ÷ (Programa + Retraso) · Cumplimiento = Realizado ÷ Planeado a la fecha (verde ≥ 100%, amarillo 90–99%, rojo &lt; 90%) · Stock disp. = Inv. inicial + Realizado − Embarque · Plan de producción: ${est('plan')} · Plan de embarque: ${est('pemb')}</p>
+      <div class="card" style="margin-top:12px"><b>Producción por día</b>
+        <div class="legend"><span><i style="background:var(--brand2)"></i>Planeado (barra ancha)</span><span><i style="background:var(--brand)"></i>Realizado (barra fina)</span><span><i style="background:var(--bad)"></i>Realizado &lt; 90% del plan</span></div>
+        ${grafDia(C.porDia, 'plan', 'real', 'Planeado', 'Realizado')}
+        <p class="how">Total de todos los modelos por día. Número sobre la barra = Realizado (o Planeado si aún no hay apunte). Var. = Realizado − Planeado.</p></div>
+      <div class="card" style="margin-top:12px"><b>Embarque por día</b>
+        <div class="legend"><span><i style="background:var(--brand2)"></i>Emb. planeado (barra ancha)</span><span><i style="background:var(--brand)"></i>Embarque (barra fina)</span></div>
+        ${grafDia(C.porDia, 'pemb', 'emb', 'Emb. plan.', 'Embarque')}
+        <p class="how">Total de todos los modelos por día. Var. = Embarque − Emb. planeado.</p></div>
+      <div class="grid two" style="margin-top:12px">
+        <div class="card"><b>Modelos con más atraso a la fecha</b><div class="scroll"><table class="t"><thead><tr><th class="l">Modelo</th><th class="l">Cliente</th><th>Atraso prod.</th><th>Emb. pend.</th><th>Stock</th></tr></thead><tbody>
+          ${top.length ? top.map((f) => `<tr><td class="l"><b>${esc(f.it.cod)}</b></td><td class="l">${esc(f.it.cli)}</td><td class="${f.atrP > 0 ? 'neg' : ''}">${f.atrP > 0 ? fN(f.atrP) : '—'}</td><td class="${f.pendE > 0 ? 'neg' : ''}">${f.pendE > 0 ? fN(f.pendE) : '—'}</td><td>${fN(f.st)}</td></tr>`).join('') : '<tr><td class="l" colspan="5">Sin atrasos a la fecha.</td></tr>'}
+          </tbody></table></div><p class="how">Atraso prod. = Planeado − Realizado a la fecha · Emb. pend. = Emb. planeado − Embarque a la fecha · orden: suma de ambos.</p></div>
+        <div class="card"><b>Avisos</b><ul class="alerts">
+          ${alertas.length ? alertas.map((f) => `<li>${f.stk ? '<span class="mk stk">◆</span>' : '<span class="mk over">▲</span>'} <b>${esc(f.it.cod)}</b> · ${f.stk ? `stock ${fN(f.st)} y faltan embarcar ${fN(f.pendE)}: embarcar del stock` : `realizado ${fN(f.re)} sobre programa ${fN(f.pr)}`}</li>`).join('') : '<li>Sin avisos.</li>'}
+        </ul><p class="how">◆ = Stock disp. &gt; 0, embarque pendiente y producción atrasada ≥ 5% del plan a la fecha · ▲ = Realizado &gt; Programa + Retraso.</p></div>
+      </div>`;
+  }
+
+  // ---------------------------------------------------------------- conexión
+  let pw = ss.get('bru_pw'), timer = null;
+  const st = (t, err) => { $('#st').textContent = t; $('#st').className = 'state' + (err ? ' err' : ''); };
+  function modo(vivo) { $('#loginBar').classList.toggle('hide', vivo); $('#liveBar').classList.toggle('hide', !vivo); }
+  async function leer() {
+    if (!pw) return;
+    st('Leyendo el servidor…');
+    try {
+      const r = await fetch(URL_SRV, { method: 'POST', body: JSON.stringify({ a: 'pull', pw }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }).then((x) => x.json());
+      if (!r || !r.ok || r.rol !== 'admin') { pw = null; ss.set('bru_pw', null); modo(false); st(r && r.ok ? 'Esta vista es solo para ADMIN.' : 'Contraseña incorrecta.', true); return; }
+      const plan = r.plan && (r.plan.plan || r.plan);
+      if (!plan || !plan.items) { modo(true); $('#prodBody').innerHTML = '<div class="card">El servidor no tiene un plan cargado todavía.</div>'; return; }
+      modo(true); st('');
+      vistaProd(armar(plan, r.regs), r.ts || Date.now(), false);
+      clearTimeout(timer); timer = setTimeout(leer, 300000);
+    } catch (e) { modo(false); st('Sin conexión con el servidor. Revise internet o use “Ver ejemplo”.', true); }
+  }
+  $('#go').addEventListener('click', () => { pw = $('#pw').value.trim().toUpperCase(); if (!pw) return; ss.set('bru_pw', pw); leer(); });
+  $('#pw').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#go').click(); });
+  $('#demo').addEventListener('click', () => { modo(true); vistaProd(armar(EJEMPLO, []), Date.now(), true); });
+  $('#refresh').addEventListener('click', () => (pw ? leer() : vistaProd(armar(EJEMPLO, []), Date.now(), true)));
+  $('#salir').addEventListener('click', () => { pw = null; ss.set('bru_pw', null); clearTimeout(timer); $('#prodBody').innerHTML = ''; $('#pw').value = ''; modo(false); st(''); });
+  if (pw) leer();
+
+  // ---------------------------------------------------------------- áreas y plan de acción
+  const AREAS = [
+    { n: 'Producción y Embarque', s: 'on', who: 'Apunta: Producción (PROD) · Aprueba: Junior (ADMIN)', c: [['Plan de producción mensual', 'on'], ['Realizado diario', 'on'], ['Plan de embarque', 'on'], ['Embarque diario', 'on'], ['Stock de producto terminado', 'on'], ['Seguridad (incidentes)', 'map'], ['Calendario de planta', 'map']] },
+    { n: 'Inventario y Compras', s: 'nx', who: 'Apunta: Almacén · Revisa: Junior', c: [['Compras', 'map'], ['Movimientos de inventario', 'map'], ['Conteo físico', 'map'], ['Proveedores', 'map'], ['Catálogo de materiales', 'map']] },
+    { n: 'Mantenimiento', s: 'map', who: 'Apunta: Mantenimiento · Revisa: Producción', c: [['Órdenes de mantenimiento', 'map'], ['Refacciones (items)', 'map'], ['Lista de materiales (BOM)', 'map'], ['Máquinas', 'map']] },
+    { n: 'Comercial', s: 'map', who: 'Apunta: Ventas · Revisa: Junior', c: [['Pedidos', 'map'], ['Pipeline', 'map'], ['Visitas', 'map'], ['Muestras', 'map'], ['Clientes', 'map'], ['Precios', 'map']] },
+    { n: 'Finanzas', s: 'map', who: 'Apunta: Administración · Revisa: Junior', c: [['Facturación', 'map'], ['Cuentas por cobrar (CxC)', 'map'], ['Cuentas por pagar (CxP)', 'map'], ['Bancos: BBVA, Santander, Bajío MXN y USD', 'map'], ['Flujo de caja diario', 'map']] },
+    { n: 'Nómina', s: 'map', who: 'Solo totales por grupo, sin nombres ni salarios', c: [['Costo de nómina por grupo', 'map'], ['Plantilla por grupo', 'map']] },
+    { n: 'Ritual de resultados', s: 'map', who: 'Reunión semanal · Dueño: Junior', c: [['Acciones y responsables', 'map'], ['Revisión semanal de indicadores', 'map']] },
+  ];
+  const TAG = { on: ['on', 'En vivo'], nx: ['nx', 'Siguiente'], map: ['map', 'Mapeado'] };
+  const tot = AREAS.reduce((s, a) => s + a.c.length, 0), vivos = AREAS.reduce((s, a) => s + a.c.filter((x) => x[1] === 'on').length, 0);
+  $('#cntTxt').textContent = `${vivos} de ${tot} · ${fPc(vivos / tot)}`;
+  $('#cntBar').style.width = (100 * vivos / tot) + '%';
+  $('#areaGrid').innerHTML = AREAS.map((a) => `<div class="card area"><h3>${a.n}<span class="tag ${TAG[a.s][0]}">${TAG[a.s][1]}</span></h3><div class="who">${a.who}</div><ul>${a.c.map(([n, s]) => `<li><span>${n}</span><span>${s === 'on' ? '● en vivo' : '○ mapeado'}</span></li>`).join('')}</ul></div>`).join('');
+
+  const ROAD = [
+    ['on', 'Producción y Embarque', 'En vivo desde noviembre 2026: link de apuntes, ciclo de aprobación del plan, Panel y Reporte. Falta sumar Seguridad y Calendario de planta.'],
+    ['nx', 'Inventario y Compras', 'Siguiente. Conecta con Producción: el consumo de materia prima sale de lo Realizado y el stock de producto terminado ya existe.'],
+    ['', 'Mantenimiento', 'Órdenes y paros por máquina; se cruza con los días de baja producción en la Hoja PP.'],
+    ['', 'Comercial', 'Pedidos y pipeline; los pedidos confirmados alimentan el Programa del mes.'],
+    ['', 'Finanzas', 'Facturación, CxC, CxP y bancos; el flujo de caja diario usa el formato estándar de abajo.'],
+    ['', 'Nómina', 'Totales por grupo (operación, administración), sin datos individuales.'],
+    ['', 'Ritual de resultados', 'Reunión semanal con los indicadores de todas las áreas y las acciones con responsable y fecha.'],
+  ];
+  $('#road').innerHTML = ROAD.map(([s, t, p]) => `<li class="${s}"><h4>${t} ${s ? `<span class="tag ${TAG[s][0]}">${TAG[s][1]}</span>` : ''}</h4><p>${p}</p></li>`).join('');
+
+  // ---------------------------------------------------------------- finanzas (ejemplo de formato)
+  (function finanzas() {
+    const dias = ['03', '04', '05', '06', '07', '10', '11', '12', '13', '14'];
+    const ent = [412000, 185000, 96000, 530000, 220000, 140000, 610000, 75000, 298000, 350000];
+    const sal = [260000, 340000, 120000, 410000, 380000, 95000, 300000, 210000, 260000, 420000];
+    const ini = 1250000;
+    let s = ini; const fin = dias.map((_, i) => (s += ent[i] - sal[i]));
+    const E = suma(ent), S = suma(sal), G = E - S;
+    const cxc = { tot: 3200000, ok: 2150000 }, cxp = { tot: 2600000, ok: 1980000 };
+    const W = 860, H = 260, L = 64, T = 24, B = 28, cw = (W - L - 10) / dias.length;
+    const mx = Math.max(...ent, ...sal, ...fin) * 1.12, y = (v) => T + (H - T - B) * (1 - v / mx);
+    let g = '';
+    [0, .25, .5, .75, 1].forEach((f) => { const v = mx * f; g += `<line x1="${L}" x2="${W - 10}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${fK(v)}</text>`; });
+    dias.forEach((d, i) => {
+      const cx = L + cw * i + cw / 2, w = Math.min(22, cw * 0.32);
+      g += `<rect x="${cx - w - 1}" y="${y(ent[i])}" width="${w}" height="${y(0) - y(ent[i])}" rx="3" fill="var(--ok)"/><text x="${cx - w / 2 - 1}" y="${y(ent[i]) - 4}" text-anchor="middle" font-size="10" fill="var(--fg)">${fK(ent[i])}</text>`;
+      g += `<rect x="${cx + 1}" y="${y(sal[i])}" width="${w}" height="${y(0) - y(sal[i])}" rx="3" fill="var(--bad)"/><text x="${cx + w / 2 + 1}" y="${y(sal[i]) - 4}" text-anchor="middle" font-size="10" fill="var(--fg)">${fK(sal[i])}</text>`;
+      g += `<text x="${cx}" y="${H - B + 15}" text-anchor="middle" font-size="11" fill="var(--muted)">${d}</text>`;
+    });
+    const pts = fin.map((v, i) => `${L + cw * i + cw / 2},${y(v)}`).join(' ');
+    g += `<polyline points="${pts}" fill="none" stroke="var(--sal)" stroke-width="2"/>`;
+    fin.forEach((v, i) => { const cx = L + cw * i + cw / 2; g += `<circle cx="${cx}" cy="${y(v)}" r="4" fill="var(--sal)" stroke="var(--panel)" stroke-width="2"/><text x="${cx}" y="${y(v) - 9}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--sal)">${fK(v)}</text>`; });
+    g += `<line x1="${L}" x2="${W - 10}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)"/>`;
+    // generación diaria ±
+    const gen = dias.map((_, i) => ent[i] - sal[i]), H2 = 170, gm = Math.max(...gen.map(Math.abs)) * 1.25, y2 = (v) => H2 / 2 - (H2 / 2 - 18) * (v / gm);
+    let g2 = `<line x1="${L}" x2="${W - 10}" y1="${y2(0)}" y2="${y2(0)}" stroke="var(--muted)"/>`;
+    gen.forEach((v, i) => { const cx = L + cw * i + cw / 2, w = Math.min(26, cw * 0.5), top = Math.min(y2(v), y2(0)); g2 += `<rect x="${cx - w / 2}" y="${top}" width="${w}" height="${Math.abs(y2(v) - y2(0))}" rx="3" fill="${v >= 0 ? 'var(--ok)' : 'var(--bad)'}"/><text x="${cx}" y="${v >= 0 ? y2(v) - 4 : y2(v) + 13}" text-anchor="middle" font-size="10" font-weight="600" fill="var(--fg)">${v > 0 ? '+' : ''}${fK(v)}</text><text x="${cx}" y="${H2 - 2}" text-anchor="middle" font-size="11" fill="var(--muted)">${dias[i]}</text>`; });
+    const dona = (t, ok, tot, lbl, col) => { const r = 52, c = 2 * Math.PI * r, f = ok / tot; return `<div class="card" style="display:flex;gap:16px;align-items:center"><svg width="130" height="130" viewBox="0 0 130 130" role="img" aria-label="${t}: ${fPc(f)}"><circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--grid)" stroke-width="16"/><circle cx="65" cy="65" r="${r}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${c * f} ${c}" transform="rotate(-90 65 65)"/><text x="65" y="70" text-anchor="middle" font-size="20" font-weight="700" fill="var(--fg)">${fPc(f)}</text></svg><div><b>${t}</b><div class="state">${lbl}: ${fN(ok)}</div><div class="state">En abierto: ${fN(tot - ok)} (${fPc(1 - f)})</div><div class="state">Total del periodo: ${fN(tot)}</div></div></div>`; };
+    const ft = (lab, arr, sg) => `<tr><th style="width:${L}px">${lab}</th>${arr.map((v) => `<td style="width:${cw}px" class="${sg ? (v < 0 ? 'neg' : 'pos') : ''}">${sg && v > 0 ? '+' : ''}${fK(v)}</td>`).join('')}</tr>`;
+    $('#finBody').innerHTML = `
+      <div class="grid kpis">${kpi('Saldo inicial', fN(ini), 'MXN · día 1')}${kpi('Entradas', fN(E), 'MXN · cobros del periodo', 'ok')}${kpi('Salidas', fN(S), 'MXN · pagos del periodo', 'bad')}${kpi('Generación de caja', (G > 0 ? '+' : '') + fN(G), 'Entradas − Salidas', G >= 0 ? 'ok' : 'bad')}${kpi('Saldo final', fN(ini + G), 'Saldo inicial + Generación')}</div>
+      <div class="card" style="margin-top:12px"><b>Entradas y salidas por día, con saldo final</b>
+        <div class="legend"><span><i style="background:var(--ok)"></i>Entradas</span><span><i style="background:var(--bad)"></i>Salidas</span><span><i style="background:var(--sal);height:3px;vertical-align:3px"></i>Saldo final</span></div>
+        <div class="scroll"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas y salidas por día con saldo final">${g}</svg>
+        <table class="ft" style="width:${W - 10}px">${ft('Entradas', ent)}${ft('Salidas', sal)}${ft('Generación', gen, true)}${ft('Saldo final', fin)}</table></div></div>
+      <div class="card" style="margin-top:12px"><b>Generación o consumo de caja por día</b>
+        <div class="legend"><span><i style="background:var(--ok)"></i>Generó caja</span><span><i style="background:var(--bad)"></i>Consumió caja</span></div>
+        <div class="scroll"><svg width="${W}" height="${H2}" viewBox="0 0 ${W} ${H2}" role="img" aria-label="Generación diaria de caja">${g2}</svg></div></div>
+      <div class="grid two" style="margin-top:12px">${dona('Cuentas por cobrar', cxc.ok, cxc.tot, 'Cobrado', 'var(--ok)')}${dona('Cuentas por pagar', cxp.ok, cxp.tot, 'Pagado', 'var(--bad)')}</div>
+      <p class="how">Generación de caja = Entradas − Salidas · Saldo final = Saldo inicial + Generación acumulada · % cobrado = Cobrado ÷ CxC del periodo · % pagado = Pagado ÷ CxP del periodo · Fuente cuando esté en vivo: bancos BBVA, Santander, Bajío MXN y USD + CxC + CxP.</p>`;
+  })();
+})();
+</script>
+</body>
+</html>
